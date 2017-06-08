@@ -19,14 +19,17 @@ var defaultCorsHeaders = {
 };
 
 var results = [];
+// [{
+//   username: 'Jono',
+//   text: 'Do my bidding!'
+// }];
 var requestHandler = function(request, response) {
   var headers = defaultCorsHeaders;
   var method = request.method;// = 'GET';
   var url = request.url; // = 'http://127.0.0.1:3000/classes/messages';  // Request and Response come from node's http module.
-  console.log(url);
   var statusCode = 200;
   
-  headers['Content-Type'] = 'application/json';
+  headers['Content-Type'] = 'text/plain';
   
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
   
@@ -35,24 +38,25 @@ var requestHandler = function(request, response) {
   //   response.writeHead(statusCode, headers);
   //   console.error(err);
   // })
-  if (url !== '/classes/messages') {
-    statusCode = 404;
-    response.writeHead(statusCode, headers);
-    // response.write(JSON.stringify({results: results})); // NOT IN HERE
-    response.end();
-  } else if (method === 'GET') {
-    response.writeHead(statusCode, headers);
+  if (method === 'GET' && url === '/classes/messages') {
+    statusCode = 200;
+    // response.writeHead(statusCode, headers);
     // response.write(JSON.stringify({results: results}));
-    response.end(JSON.stringify({results: results}));
+    // response.end(JSON.stringify({results: results}));
   } else if (method === 'POST') {
     statusCode = 201;
     request.on('data', function(data) {
-      results.push(JSON.parse(data.toString('utf8')));
-      response.writeHead(statusCode, headers);
+      results.push(JSON.parse(data));
       // response.write(JSON.stringify({results: results}));
-      response.end(JSON.stringify({results: results}));
     });
+  } else if (method !== 'OPTIONS') {
+    statusCode = 404;
   }
+  response.writeHead(statusCode, headers);
+  // console.log(statusCode);
+  // console.log(headers);
+  //response.end('hello');
+  response.end(JSON.stringify({results: results}));
     // response.end(function(chunk) {
     //   console.log('In post and postdata, ', request._postData);
     //   results.push(chunk);
