@@ -42,15 +42,15 @@ var requestHandler = function(request, response) {
     response.end();
   } else if (method === 'GET') {
     response.writeHead(statusCode, headers);
-    response.write(JSON.stringify({results: results}));
-    response.end();
+    // response.write(JSON.stringify({results: results}));
+    response.end(JSON.stringify({results: results}));
   } else if (method === 'POST') {
     statusCode = 201;
     request.on('data', function(data) {
       results.push(JSON.parse(data.toString('utf8')));
       response.writeHead(statusCode, headers);
-      response.write(JSON.stringify({results: results}));
-      response.end();
+      // response.write(JSON.stringify({results: results}));
+      response.end(JSON.stringify({results: results}));
     });
   }
     // response.end(function(chunk) {
